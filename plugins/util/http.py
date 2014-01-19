@@ -62,11 +62,9 @@ def open(url, query_params=None, user_agent=None, referer=None, post_data=None,
 
     request.add_header('User-Agent', user_agent)
 
-    if headers is None:
-        headers = {}
-
-    for header_key, header_value in headers.iteritems():
-        request.add_header(header_key, header_value)
+    if headers is not None:
+        for header_key, header_value in headers.iteritems():
+            request.add_header(header_key, header_value)
 
     if referer is not None:
         request.add_header('Referer', referer)
