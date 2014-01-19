@@ -60,7 +60,7 @@ def open(url, query_params=None, post_data=None,
         for header_key, header_value in headers.iteritems():
             request.add_header(header_key, header_value)
 
-    if 'User-Agent' not in headers:
+    if 'User-Agent' not in request.headers:
         request.add_header('User-Agent', ua_skybot)
 
     if oauth:
