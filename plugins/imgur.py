@@ -1,18 +1,11 @@
 from util import http, hook
 
-api_root = 'https://api.imgur.com/3/image/'
+api_root = 'https://api.imgur.com/3/'
+api_image_root = api_root + 'image/'
+api_gallery_root = api_root + 'gallery/image/'
 
 
-@hook.api_key('imgur')
-@hook.regex(r'imgur.com/([A-z0-9]+)')
-def imgur(match, api_key=None):
-    request_url = api_root + match.group(1)
-    results = http.get_json(request_url, headers={'Authorization': 'Client-ID ' + api_key})
-
-    if not results['success']:
-        return
-
-    image = results['data']
+def get_image_description(image):
     title = image['title']
 
     if title is None:
@@ -39,3 +32,24 @@ def imgur(match, api_key=None):
     title = u'%s [%s]' % (title, ', '.join(attributes))
 
     return title
+
+
+def process_result(results):
+    if not results['success']:
+        return
+
+    image = results['data']
+
+    return get_image_description(image)
+
+
+@hook.api_key('imgur')
+@hook.regex(r'imgur.com/(gallery/)?([A-z0-9]+)')
+def imgur(match, api_key=None):
+    if match.group(1) == 'gallery/':
+        request_url = api_gallery_root + match.group(2)
+    else:
+        request_url = api_image_root + match.group(2)
+
+    results = http.get_json(request_url, headers={'Authorization': 'Client-ID ' + api_key})
+    return process_result(results)
