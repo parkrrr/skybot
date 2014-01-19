@@ -7,8 +7,7 @@ api_root = 'https://api.imgur.com/3/image/'
 @hook.regex(r'imgur.com/([A-z0-9]+)')
 def imgur(match, api_key=None):
     request_url = api_root + match.group(1)
-    results = http.get_json(request_url, None, None, None, None,
-                            None, False, False, None, {'Authorization': 'Client-ID ' + api_key})
+    results = http.get_json(request_url, headers={'Authorization': 'Client-ID ' + api_key})
 
     if not results['success']:
         return
