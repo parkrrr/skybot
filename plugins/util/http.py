@@ -42,14 +42,11 @@ def get_json(*args, **kwargs):
     return json.loads(get(*args, **kwargs))
 
 
-def open(url, query_params=None, user_agent=None, referer=None, post_data=None,
+def open(url, query_params=None, post_data=None,
          get_method=None, cookies=False, oauth=False, oauth_keys=None, headers=None, **kwargs):
 
     if query_params is None:
         query_params = {}
-
-    if user_agent is None:
-        user_agent = ua_skybot
 
     query_params.update(kwargs)
 
@@ -60,14 +57,12 @@ def open(url, query_params=None, user_agent=None, referer=None, post_data=None,
     if get_method is not None:
         request.get_method = lambda: get_method
 
-    request.add_header('User-Agent', user_agent)
-
     if headers is not None:
         for header_key, header_value in headers.iteritems():
             request.add_header(header_key, header_value)
 
-    if referer is not None:
-        request.add_header('Referer', referer)
+    if 'User-Agent' not in headers:
+        request.add_header('User-Agent', ua_skybot)
 
     if oauth:
         nonce = oauth_nonce()
